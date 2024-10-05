@@ -1,20 +1,15 @@
 import { Loader, MapPin } from "lucide-react";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { SetStateAction, useEffect, useRef, useState } from "react";
-import Map, { Marker, Popup } from "react-map-gl";
+import Map, { Marker } from "react-map-gl";
 
-interface Location {
-  latitude: number | null;
-  longitude: number | null;
-}
-
-export default function HomepageMap({ locationName, setLocationName }) {
+export default function HomepageMap({
+  locationName,
+  setLocationName,
+  location,
+  setLocation,
+}) {
   const [moveEvent, setMoveEvent] = useState();
-  const [showPopup, setShowPopup] = useState(false);
-  const [location, setLocation] = useState<Location>({
-    latitude: null,
-    longitude: null,
-  });
 
   const [initialCoordinates, setInitialCoordinates] = useState({
     latitude: 0,
@@ -68,7 +63,6 @@ export default function HomepageMap({ locationName, setLocationName }) {
             longitude: position.coords.longitude,
           };
           setLocation(newLocation);
-          setShowPopup(true);
           setInitialCoordinates(newLocation);
           setViewState((prev: any) => ({
             ...prev,
@@ -153,7 +147,6 @@ export default function HomepageMap({ locationName, setLocationName }) {
         onClick={(e) => {
           setLocation({ longitude: e.lngLat.lng, latitude: e.lngLat.lat });
           fetchLocationName(e.lngLat.lat, e.lngLat.lng);
-          setShowPopup(true);
         }}
       >
         {initialCoordinates.latitude && initialCoordinates.longitude && (

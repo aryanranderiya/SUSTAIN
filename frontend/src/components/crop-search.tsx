@@ -27,7 +27,7 @@ interface Crop {
   image: string;
 }
 
-const crops: Crop[] = [
+export const crops: Crop[] = [
   { name: "Wheat", image: wheat },
   { name: "Corn", image: corn },
   { name: "Rice", image: rice },

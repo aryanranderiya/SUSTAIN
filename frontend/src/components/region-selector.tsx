@@ -1,58 +1,35 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from "@/components/ui/dialog";
-import { useState } from "react";
+import { LocationType } from "@/pages/Home";
 import { useNavigate } from "react-router-dom";
-import { CropSearchComponent } from "./crop-search";
-
-const regions = [
-  { name: "North Region", lat: 41.881832, lon: -87.623177 },
-  { name: "South Region", lat: 29.749907, lon: -95.358421 },
-  { name: "East Region", lat: 40.73061, lon: -73.935242 },
-  { name: "West Region", lat: 34.052235, lon: -118.243683 },
-];
-
-interface RegionType {
-  name: string;
-  lat: number;
-  lon: number;
-}
+import { crops } from "./crop-search";
 
 export function RegionSelectorComponent({
   open,
   setOpen,
   locationName,
+  location,
 }: {
+  open: boolean;
+  setOpen: (value: boolean) => void;
   locationName: string;
+  location: LocationType;
 }) {
   const navigate = useNavigate();
-  const [selectedRegion, setSelectedRegion] = useState<RegionType | null>();
-  // const [selectedRegion, setSelectedRegion] = useState<RegionType | null>(null);
-  const [selectedCrop, setSelectedCrop] = useState("");
 
-  const handleRegionSelect = (region: RegionType) => {
-    setSelectedRegion(region);
-    setOpen(true);
-  };
-
-  const handleCropSelect = (value: string) => {
-    setSelectedCrop(value);
-  };
-
-  const handleSubmit = () => {
-    if (selectedRegion && selectedCrop) {
+  const handleSubmit = (cropName: string) => {
+    if (location && cropName) {
       navigate(
-        `/details?crop=${encodeURIComponent(selectedCrop)}&lat=${
-          selectedRegion.lat
-        }&lon=${selectedRegion.lon}`
+        `/details?crop=${encodeURIComponent(cropName)}&lat=${
+          location.latitude
+        }&lon=${location.longitude}`
       );
     }
   };
@@ -76,20 +53,31 @@ export function RegionSelectorComponent({
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Select Crop for {selectedRegion?.name}</DialogTitle>
+            <DialogTitle>Select Crop for {locationName}</DialogTitle>
             <DialogDescription>
               Choose a crop to view detailed information for this region.
             </DialogDescription>
           </DialogHeader>
-          <CropSearchComponent
+          {/* <CropSearchComponent
             handleCropSelect={handleCropSelect}
             selectedCrop={selectedCrop}
-          />
-          <DialogFooter>
-            <Button onClick={handleSubmit} disabled={!selectedCrop}>
-              View Details
-            </Button>
-          </DialogFooter>
+          /> */}
+          <div className="flex flex-wrap gap-3 justify-center">
+            {crops.map((crop) => (
+              <div
+                className="relative cursor-pointer"
+                onClick={() => handleSubmit(crop.name)}
+              >
+                <img
+                  src={crop.image}
+                  className="max-w-[200px] min-w-[200px] aspect-square rounded-lg shadow-xl"
+                />
+                <div className="absolute p-1 bottom-0 w-full bg-opacity-80 backdrop-blur-sm bg-white justify-center flex rounded-lg rounded-t-none">
+                  {crop.name}
+                </div>
+              </div>
+            ))}
+          </div>
         </DialogContent>
       </Dialog>
     </>
