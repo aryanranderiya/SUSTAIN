@@ -4,11 +4,20 @@ import { useState } from "react";
 
 export default function Home() {
   const [open, setOpen] = useState(false);
+  const [locationName, setLocationName] = useState<string>("");
 
   return (
     <div className="w-screen flex">
-      <RegionSelectorComponent open={open} setOpen={setOpen} />
-      <HomepageMap open={open} setOpen={setOpen} />
+      <RegionSelectorComponent
+        open={open}
+        setOpen={setOpen}
+        locationName={locationName}
+        setLocationName={setLocationName}
+      />
+      <HomepageMap
+        setLocationName={setLocationName}
+        locationName={locationName}
+      />
     </div>
   );
 }

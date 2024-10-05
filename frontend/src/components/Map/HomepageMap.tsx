@@ -1,24 +1,26 @@
 import { Loader, MapPin } from "lucide-react";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { SetStateAction, useEffect, useRef, useState } from "react";
-import Map, { Marker } from "react-map-gl";
+import Map, { Marker, Popup } from "react-map-gl";
 
 interface Location {
   latitude: number | null;
   longitude: number | null;
 }
 
-const initialCoordinates = {
-  latitude: 0,
-  longitude: 0,
-};
-
-export default function HomepageMap({ open, setOpen }) {
+export default function HomepageMap({ locationName, setLocationName }) {
   const [moveEvent, setMoveEvent] = useState();
+  const [showPopup, setShowPopup] = useState(false);
   const [location, setLocation] = useState<Location>({
     latitude: null,
     longitude: null,
   });
+
+  const [initialCoordinates, setInitialCoordinates] = useState({
+    latitude: 0,
+    longitude: 0,
+  });
+
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
@@ -31,6 +33,21 @@ export default function HomepageMap({ open, setOpen }) {
     pitch: 0,
     padding: { top: 0, right: 0, bottom: 0, left: 0 },
   });
+
+  const fetchLocationName = async (latitude: number, longitude: number) => {
+    const response = await fetch(
+      `https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?access_token=${
+        import.meta.env.VITE_MAPBOX_TOKEN
+      }`
+    );
+    const data = await response.json();
+
+    if (data.features && data.features.length > 0) {
+      setLocationName(data.features[0].place_name); // Set the name of the location
+    } else {
+      setLocationName("Location not found");
+    }
+  };
 
   useEffect(() => {
     console.log(moveEvent);
@@ -51,12 +68,15 @@ export default function HomepageMap({ open, setOpen }) {
             longitude: position.coords.longitude,
           };
           setLocation(newLocation);
+          setShowPopup(true);
+          setInitialCoordinates(newLocation);
           setViewState((prev: any) => ({
             ...prev,
             longitude: newLocation.longitude!,
             latitude: newLocation.latitude!,
             zoom: 10,
           }));
+          fetchLocationName(newLocation.latitude, newLocation.longitude);
 
           setTimeout(() => {
             setLoading(false);
@@ -130,18 +150,47 @@ export default function HomepageMap({ open, setOpen }) {
         initialViewState={viewState}
         style={{ width: "100%", height: "100%" }}
         mapStyle="mapbox://styles/mapbox/standard-satellite"
-        onClick={() => setOpen(true)}
-        // onDblClick={(e) => console.log(e)}
+        onClick={(e) => {
+          setLocation({ longitude: e.lngLat.lng, latitude: e.lngLat.lat });
+          fetchLocationName(e.lngLat.lat, e.lngLat.lng);
+          setShowPopup(true);
+        }}
       >
-        {location.latitude && location.longitude && (
+        {initialCoordinates.latitude && initialCoordinates.longitude && (
           <Marker
-            longitude={location.longitude}
-            latitude={location.latitude}
+            longitude={initialCoordinates.longitude}
+            latitude={initialCoordinates.latitude}
             anchor="bottom"
           >
-            <MapPin fill="red" color="#ffc7c7" width={35} height={35} />
+            <div className="w-6 h-6 bg-blue-600 border-white border-[3px] rounded-full absolute left-[8px]"></div>
           </Marker>
         )}
+
+        {initialCoordinates.latitude !== location.latitude &&
+          location.latitude &&
+          location.longitude && (
+            <>
+              <Marker
+                longitude={location.longitude}
+                latitude={location.latitude}
+                anchor="bottom"
+              >
+                <MapPin fill="red" color="#ffc7c7" width={35} height={35} />
+              </Marker>
+              {/* 
+              {showPopup && (
+                <Popup
+                  longitude={location.longitude}
+                  latitude={location.latitude}
+                  anchor="top"
+                  closeOnClick
+                  onClose={() => setShowPopup(false)}
+                >
+                  {locationName}
+                </Popup>
+              )} */}
+            </>
+          )}
       </Map>
     </div>
   );

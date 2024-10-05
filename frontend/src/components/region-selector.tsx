@@ -26,11 +26,15 @@ interface RegionType {
   lon: number;
 }
 
-export function RegionSelectorComponent({ open, setOpen }) {
+export function RegionSelectorComponent({
+  open,
+  setOpen,
+  locationName,
+}: {
+  locationName: string;
+}) {
   const navigate = useNavigate();
-  const [selectedRegion, setSelectedRegion] = useState<RegionType | null>(
-    "Dummy location"
-  );
+  const [selectedRegion, setSelectedRegion] = useState<RegionType | null>();
   // const [selectedRegion, setSelectedRegion] = useState<RegionType | null>(null);
   const [selectedCrop, setSelectedCrop] = useState("");
 
@@ -54,24 +58,40 @@ export function RegionSelectorComponent({ open, setOpen }) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Select Crop for {selectedRegion?.name}</DialogTitle>
-          <DialogDescription>
-            Choose a crop to view detailed information for this region.
-          </DialogDescription>
-        </DialogHeader>
-        <CropSearchComponent
-          handleCropSelect={handleCropSelect}
-          selectedCrop={selectedCrop}
-        />
-        <DialogFooter>
-          <Button onClick={handleSubmit} disabled={!selectedCrop}>
-            View Details
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    <>
+      <div className="z-10 fixed bottom-4 left-0 w-full flex items-center justify-center">
+        <div
+          className={`rounded-[40px] bg-blue-500 py-2 px-5 text-white shadow-2xl cursor-pointer outline shadow-black flex flex-col items-center select-none ${
+            locationName.length <= 0 ? "opacity-0" : "opacity-100"
+          }`}
+          onClick={() => setOpen(true)}
+        >
+          <span className="font-bold">View Information</span>
+          <span className="text-xs">of</span>
+          <span className="text-sm font-semibold w-72 text-center">
+            {locationName}
+          </span>
+        </div>
+      </div>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Select Crop for {selectedRegion?.name}</DialogTitle>
+            <DialogDescription>
+              Choose a crop to view detailed information for this region.
+            </DialogDescription>
+          </DialogHeader>
+          <CropSearchComponent
+            handleCropSelect={handleCropSelect}
+            selectedCrop={selectedCrop}
+          />
+          <DialogFooter>
+            <Button onClick={handleSubmit} disabled={!selectedCrop}>
+              View Details
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
