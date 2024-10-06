@@ -1,4 +1,4 @@
-import HomepageMap from "@/components/Map/HomepageMap";
+import HomepageMap from "../components/Map/HomepageMap";
 import { RegionSelectorComponent } from "@/components/region-selector";
 import { useState } from "react";
 export interface LocationType {

@@ -4,9 +4,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { AnimatePresence, motion } from "framer-motion";
 import { Bot, Eraser, Send, User, XIcon } from "lucide-react";
 import { useState } from "react";
-import Markdown from "react-markdown"; // Import react-markdown
+import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
+// Define the Message interface with strict role typing
 interface Message {
   role: "user" | "assistant";
   content: string;
@@ -22,7 +23,7 @@ export function LlmChat({ locationName }: { locationName: string }) {
 
   const handleSendMessage = async (newMessage: string) => {
     const locationPrompt = `I am in the location: ${locationName}`;
-    const userMessage = { role: "user", content: newMessage };
+    const userMessage: Message = { role: "user", content: newMessage };
     const updatedMessages = [...messages, userMessage];
 
     const truncatedMessages = updatedMessages.slice(-MAX_MESSAGES);
@@ -41,10 +42,7 @@ export function LlmChat({ locationName }: { locationName: string }) {
           body: JSON.stringify({
             messages: [
               { role: "system", content: "You are a friendly assistant" },
-              {
-                role: "user",
-                content: locationPrompt,
-              },
+              { role: "user", content: locationPrompt },
               ...truncatedMessages,
             ],
           }),
@@ -56,7 +54,7 @@ export function LlmChat({ locationName }: { locationName: string }) {
       }
 
       const data = await response.json();
-      const assistantMessage = {
+      const assistantMessage: Message = {
         role: "assistant",
         content: data.response, // Use data.response directly
       };

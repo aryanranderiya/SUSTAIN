@@ -1,7 +1,7 @@
 import { LocationType } from "@/pages/Home";
 import { Loader, MapPin } from "lucide-react";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { SetStateAction, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Map, { Marker, Popup } from "react-map-gl";
 
 export default function HomepageMap({
@@ -13,24 +13,18 @@ export default function HomepageMap({
   setLocation: (location: LocationType) => void;
   location: LocationType;
 }) {
-  const [moveEvent, setMoveEvent] = useState();
-
   const [initialCoordinates, setInitialCoordinates] = useState({
     latitude: 0,
     longitude: 0,
   });
-
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
-  const mapRef = useRef<Map | null>(null);
-  const [viewState, setViewState] = useState<any>({
+  const mapRef = useRef<any>(null);
+  const [viewState, setViewState] = useState({
     longitude: initialCoordinates.longitude,
     latitude: initialCoordinates.latitude,
     zoom: 3,
-    bearing: 0,
-    pitch: 0,
-    padding: { top: 0, right: 0, bottom: 0, left: 0 },
   });
 
   const fetchLocationName = async (latitude: number, longitude: number) => {
@@ -42,15 +36,11 @@ export default function HomepageMap({
     const data = await response.json();
 
     if (data.features && data.features.length > 0) {
-      setLocationName(data.features[0].place_name); // Set the name of the location
+      setLocationName(data.features[0].place_name);
     } else {
       setLocationName("Location not found");
     }
   };
-
-  useEffect(() => {
-    console.log(moveEvent);
-  }, [moveEvent]);
 
   useEffect(() => {
     const getLocation = () => {
@@ -68,17 +58,14 @@ export default function HomepageMap({
           };
           setLocation(newLocation);
           setInitialCoordinates(newLocation);
-          setViewState((prev: any) => ({
-            ...prev,
-            longitude: newLocation.longitude!,
-            latitude: newLocation.latitude!,
+          setViewState({
+            ...viewState,
+            longitude: newLocation.longitude,
+            latitude: newLocation.latitude,
             zoom: 14,
-          }));
+          });
           fetchLocationName(newLocation.latitude, newLocation.longitude);
-
-          setTimeout(() => {
-            setLoading(false);
-          }, 1000);
+          setLoading(false);
         },
         (err) => {
           setError(err.message);
@@ -91,33 +78,7 @@ export default function HomepageMap({
   }, []);
 
   useEffect(() => {
-    const handleResize = () => {
-      if (mapContainerRef.current) {
-        setViewState((prev: any) => ({
-          ...prev,
-          width: mapContainerRef.current?.clientWidth,
-          height: mapContainerRef.current?.clientHeight,
-        }));
-      }
-    };
-
-    if (mapRef.current) {
-      mapRef.current?.on("mousemove", (e: SetStateAction<undefined>) => {
-        setMoveEvent(e);
-      });
-    }
-
-    window.addEventListener("resize", handleResize);
-    handleResize();
-
-    return () => {
-      if (mapRef.current) mapRef.current.remove();
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (location.latitude !== null && location.longitude !== null) {
+    if (location.latitude && location.longitude) {
       setViewState((prev: any) => ({
         ...prev,
         longitude: location.longitude,
@@ -168,12 +129,9 @@ export default function HomepageMap({
               latitude={initialCoordinates.latitude}
               anchor="top"
               closeOnClick={false}
-              onClick={(e: { stopPropagation: () => void }) =>
-                e.stopPropagation()
-              }
               onClose={() => console.log("")}
             >
-              You are here
+              <div onClick={(e) => e.stopPropagation()}>You are here</div>
             </Popup>
           </>
         )}
@@ -189,19 +147,6 @@ export default function HomepageMap({
               >
                 <MapPin fill="red" color="#ffc7c7" width={35} height={35} />
               </Marker>
-
-              {/* 
-              {showPopup && (
-                <Popup
-                  longitude={location.longitude}
-                  latitude={location.latitude}
-                  anchor="top"
-                  closeOnClick
-                  onClose={() => setShowPopup(false)}
-                >
-                  {locationName}
-                </Popup>
-              )} */}
             </>
           )}
       </Map>
