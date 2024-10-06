@@ -1,13 +1,33 @@
 import { useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Droplet, Sprout, Cloud, CloudRain } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export default function DetailsPage() {
   const [searchParams] = useSearchParams();
-
+  const [locationName, setLocationName] = useState("");
   const crop = searchParams.get("crop");
-  const lat = searchParams.get("lat");
-  const lon = searchParams.get("lon");
+  const lat: number = parseFloat(searchParams.get("lat") ?? "0");
+  const lon: number = parseFloat(searchParams.get("lon") ?? "0");
+
+  const fetchLocationName = async (latitude: number, longitude: number) => {
+    const response = await fetch(
+      `https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?access_token=${
+        import.meta.env.VITE_MAPBOX_TOKEN
+      }`
+    );
+    const data = await response.json();
+
+    if (data.features && data.features.length > 0) {
+      setLocationName(data.features[0].place_name);
+    } else {
+      setLocationName("Location not found");
+    }
+  };
+
+  useEffect(() => {
+    fetchLocationName(lat, lon);
+  }, [lat, lon]);
 
   return (
     <div className="w-screen min-h-screen bg-muted p-8 pt-[60px]">
@@ -83,7 +103,14 @@ export default function DetailsPage() {
       </div>
 
       <div className="mt-8 text-center">
-        <h2 className="text-xl font-semibold mb-2">Current Crop: {crop}</h2>
+        <h2 className="text-xl mb-2 space-x-2">
+          <span className="font-bold">Current Crop:</span>
+          <span>{crop}</span>
+        </h2>
+        <h4 className="space-x-2 mb-2">
+          <span className="font-bold">Location:</span>
+          <span>{locationName}</span>
+        </h4>
         <p>Latitude: {lat}</p>
         <p>Longitude: {lon}</p>
       </div>

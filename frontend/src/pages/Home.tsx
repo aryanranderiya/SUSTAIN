@@ -1,3 +1,4 @@
+import { LlmChat } from "@/components/llm-chat";
 import HomepageMap from "@/components/Map/HomepageMap";
 import { RegionSelectorComponent } from "@/components/region-selector";
 import { useState } from "react";
@@ -6,13 +7,18 @@ export interface LocationType {
   longitude: number | null;
 }
 
-export default function Home() {
+export default function Home({
+  location,
+  setLocation,
+  locationName,
+  setLocationName,
+}: {
+  setLocationName: (value: string) => void;
+  setLocation: (location: LocationType) => void;
+  location: LocationType;
+  locationName: string;
+}) {
   const [open, setOpen] = useState(false);
-  const [locationName, setLocationName] = useState<string>("");
-  const [location, setLocation] = useState<LocationType>({
-    latitude: null,
-    longitude: null,
-  });
 
   return (
     <div className="w-screen flex">
@@ -24,7 +30,6 @@ export default function Home() {
       />
       <HomepageMap
         setLocationName={setLocationName}
-        locationName={locationName}
         location={location}
         setLocation={setLocation}
       />

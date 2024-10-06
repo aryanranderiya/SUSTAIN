@@ -1,13 +1,17 @@
+import { LocationType } from "@/pages/Home";
 import { Loader, MapPin } from "lucide-react";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { SetStateAction, useEffect, useRef, useState } from "react";
 import Map, { Marker } from "react-map-gl";
 
 export default function HomepageMap({
-  locationName,
   setLocationName,
   location,
   setLocation,
+}: {
+  setLocationName: (value: string) => void;
+  setLocation: (location: LocationType) => void;
+  location: LocationType;
 }) {
   const [moveEvent, setMoveEvent] = useState();
 
@@ -155,7 +159,7 @@ export default function HomepageMap({
             latitude={initialCoordinates.latitude}
             anchor="bottom"
           >
-            <div className="w-6 h-6 bg-blue-600 border-white border-[3px] rounded-full absolute left-[8px]"></div>
+            <div className="w-6 h-6 bg-blue-600 border-white border-[3px] rounded-full absolute left-[8px]" />
           </Marker>
         )}
 
