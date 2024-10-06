@@ -113,7 +113,7 @@ export default function DetailsPage() {
   return (
     <div className="w-screen min-h-screen bg-muted p-8 pt-[60px]">
       <div className="overflow-hidden relative z-10 rounded-xl mb-3">
-        <h1 className="mt-6 text-3xl font-bold mb-6 text-center">
+        <h1 className="mt-6 text-3xl font-bold my-6 text-center">
           {!!crop && (
             <img
               src={getCropImage(crop)}
