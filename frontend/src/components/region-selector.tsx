@@ -54,7 +54,7 @@ export function RegionSelectorComponent({
     <>
       <div className="z-10 fixed bottom-4 left-0 w-full flex items-center justify-center">
         <div
-          className={`rounded-[40px] bg-blue-500 py-2 px-5 text-white shadow-2xl cursor-pointer outline shadow-black flex flex-col items-center select-none ${
+          className={`rounded-[40px] bg-blue-500 hover:bg-blue-900 transition-all py-2 px-5 text-white shadow-2xl cursor-pointer outline shadow-black flex flex-col items-center select-none ${
             locationName.length <= 0 ? "opacity-0" : "opacity-100"
           }`}
           onClick={() => setOpen(true)}

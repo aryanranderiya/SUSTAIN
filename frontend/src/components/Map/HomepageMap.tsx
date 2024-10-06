@@ -2,7 +2,7 @@ import { LocationType } from "@/pages/Home";
 import { Loader, MapPin } from "lucide-react";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { SetStateAction, useEffect, useRef, useState } from "react";
-import Map, { Marker } from "react-map-gl";
+import Map, { Marker, Popup } from "react-map-gl";
 
 export default function HomepageMap({
   setLocationName,
@@ -72,7 +72,7 @@ export default function HomepageMap({
             ...prev,
             longitude: newLocation.longitude!,
             latitude: newLocation.latitude!,
-            zoom: 10,
+            zoom: 14,
           }));
           fetchLocationName(newLocation.latitude, newLocation.longitude);
 
@@ -122,7 +122,7 @@ export default function HomepageMap({
         ...prev,
         longitude: location.longitude,
         latitude: location.latitude,
-        zoom: 10,
+        zoom: 14,
       }));
     }
   }, [location]);
@@ -154,13 +154,28 @@ export default function HomepageMap({
         }}
       >
         {initialCoordinates.latitude && initialCoordinates.longitude && (
-          <Marker
-            longitude={initialCoordinates.longitude}
-            latitude={initialCoordinates.latitude}
-            anchor="bottom"
-          >
-            <div className="w-6 h-6 bg-blue-600 border-white border-[3px] rounded-full absolute left-[8px]" />
-          </Marker>
+          <>
+            <Marker
+              longitude={initialCoordinates.longitude}
+              latitude={initialCoordinates.latitude}
+              anchor="bottom"
+            >
+              <div className="w-6 h-6 bg-blue-600 drop-shadow-2xl z-10 border-white border-[3px] rounded-full" />
+            </Marker>
+
+            <Popup
+              longitude={initialCoordinates.longitude}
+              latitude={initialCoordinates.latitude}
+              anchor="top"
+              closeOnClick={false}
+              onClick={(e: { stopPropagation: () => void }) =>
+                e.stopPropagation()
+              }
+              onClose={() => console.log("")}
+            >
+              You are here
+            </Popup>
+          </>
         )}
 
         {initialCoordinates.latitude !== location.latitude &&
@@ -174,6 +189,7 @@ export default function HomepageMap({
               >
                 <MapPin fill="red" color="#ffc7c7" width={35} height={35} />
               </Marker>
+
               {/* 
               {showPopup && (
                 <Popup
