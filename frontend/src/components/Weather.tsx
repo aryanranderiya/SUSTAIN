@@ -49,7 +49,7 @@ const getWeatherInsight = () =>
   //   humidity: number,
   //   windSpeed: number
   {
-    let insights = [];
+    // let insights = [];
     //   if (temp > 30)
     //     insights.push("It's very hot outside. Stay hydrated and seek shade.");
     //   if (temp < 5) insights.push("It's very cold. Bundle up and stay warm.");

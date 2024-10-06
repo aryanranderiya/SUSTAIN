@@ -1,3 +1,11 @@
+// Define the Crop type
+type Crop = {
+  name: string;
+  // You can add other properties as needed, e.g., image URL
+  image?: string;
+};
+
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -15,14 +23,18 @@ import {
 import { cn } from "@/lib/utils";
 import { Check, ChevronsUpDown } from "lucide-react";
 
+type CropSearchComponentProps = {
+  handleCropSelect: (value: string) => void;
+  selectedCrop: string;
+  crops: Crop[];
+};
 
 export function CropSearchComponent({
   handleCropSelect,
   selectedCrop,
-}: {
-  handleCropSelect: (value: string) => void;
-  selectedCrop: string;
-}) {
+  crops, // Accept crops as a prop
+}: CropSearchComponentProps) {
+  const [open, setOpen] = useState(false); // State for popover open/close
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -34,7 +46,7 @@ export function CropSearchComponent({
           className="w-full justify-between"
         >
           {selectedCrop
-            ? crops.find((crop: Crop) => crop.name === selectedCrop)?.name
+            ? crops.find((crop) => crop.name === selectedCrop)?.name
             : "Select crop..."}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -45,7 +57,7 @@ export function CropSearchComponent({
           <CommandList>
             <CommandEmpty>No Crops found.</CommandEmpty>
             <CommandGroup>
-              {crops.map((crop: Crop) => (
+              {crops.map((crop) => (
                 <CommandItem
                   key={crop.name}
                   value={crop.name}
@@ -58,11 +70,6 @@ export function CropSearchComponent({
                   className="flex justify-between"
                 >
                   <div className="flex flex-row gap-2 items-center">
-                    {/* <img
-                      src={crop.image}
-                      className="rounded-full object-cover"
-                      style={{ objectFit: "cover" }}
-                    /> */}
                     {crop.name}
                   </div>
 
