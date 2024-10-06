@@ -1,7 +1,5 @@
-"use client";
-
 import { useState } from "react";
-import { Bot, Send, User, X } from "lucide-react";
+import { Bot, Eraser, Send, User, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -160,13 +158,29 @@ export function LlmChat({ locationName }: { locationName: string }) {
               ))}
               {isLoading && (
                 <div className="flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
                 </div>
               )}
             </ScrollArea>
 
-            <div className="p-4 border-t">
-              <form onSubmit={handleSubmit} className="flex items-center">
+            <div className="px-4 pb-4 pt-2 border-t flex flex-col items-end gap-2">
+              <div
+                className={`bg-transparent text-xs font-bold flex gap-1 items-center select-none ${
+                  messages.length > 0
+                    ? "text-foreground cursor-pointer"
+                    : "text-gray-400 cursor-not-allowed"
+                }`}
+                onClick={() => {
+                  if (messages.length > 0) setMessages([]);
+                }}
+              >
+                <span>Clear Chat</span>
+                <Eraser width={15} />
+              </div>
+              <form
+                onSubmit={handleSubmit}
+                className="flex items-center w-full"
+              >
                 <Input
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
