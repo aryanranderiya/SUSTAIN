@@ -1,0 +1,19 @@
+.details_markdown table,
+.details_markdown th,
+.details_markdown td {
+  border: 1px solid black;
+}
+
+.details_markdown th,
+.details_markdown td {
+  padding: 2px;
+  text-align: center;
+}
+
+.details_markdown th {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.details_markdown table {
+  margin-top: 10px;
+}

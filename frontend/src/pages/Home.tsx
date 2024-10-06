@@ -1,4 +1,3 @@
-import { LlmChat } from "@/components/llm-chat";
 import HomepageMap from "@/components/Map/HomepageMap";
 import { RegionSelectorComponent } from "@/components/region-selector";
 import { useState } from "react";

@@ -147,7 +147,7 @@ export default function HomepageMap({
         mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
         initialViewState={viewState}
         style={{ width: "100%", height: "100%" }}
-        mapStyle="mapbox://styles/mapbox/standard-satellite"
+        mapStyle="mapbox://styles/mapbox/standard"
         onClick={(e) => {
           setLocation({ longitude: e.lngLat.lng, latitude: e.lngLat.lat });
           fetchLocationName(e.lngLat.lat, e.lngLat.lng);

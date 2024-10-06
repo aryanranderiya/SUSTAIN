@@ -1,11 +1,11 @@
-import { useState } from "react";
-import { Bot, Eraser, Send, User, X } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { XIcon } from "lucide-react";
-import ReactMarkdown from "react-markdown"; // Import react-markdown
+import { AnimatePresence, motion } from "framer-motion";
+import { Bot, Eraser, Send, User, XIcon } from "lucide-react";
+import { useState } from "react";
+import Markdown from "react-markdown"; // Import react-markdown
+import remarkGfm from "remark-gfm";
 
 interface Message {
   role: "user" | "assistant";
@@ -87,7 +87,7 @@ export function LlmChat({ locationName }: { locationName: string }) {
   return (
     <>
       <Button
-        className="fixed bottom-6 right-6 bg-blue-500 border-[3px] border-solid border-white rounded-full w-12 h-12 p-0 cursor-pointer z-20"
+        className="fixed bottom-6 shadow-xl right-6 bg-blue-500 border-[3px] border-solid border-white rounded-full w-12 h-12 p-0 cursor-pointer z-20"
         onClick={() => setIsOpen(true)}
       >
         <Bot className="w-6 h-6" />
@@ -146,7 +146,9 @@ export function LlmChat({ locationName }: { locationName: string }) {
                     }`}
                   >
                     {message.role === "assistant" ? (
-                      <ReactMarkdown>{message.content}</ReactMarkdown> // Use ReactMarkdown for rendering
+                      <Markdown remarkPlugins={[remarkGfm]}>
+                        {message.content}
+                      </Markdown>
                     ) : (
                       message.content
                     )}

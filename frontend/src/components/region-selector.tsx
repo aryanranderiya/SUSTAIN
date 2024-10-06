@@ -1,15 +1,31 @@
-"use client";
-
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle
+  DialogTitle,
 } from "@/components/ui/dialog";
 import { LocationType } from "@/pages/Home";
 import { useNavigate } from "react-router-dom";
-import { crops } from "./crop-search";
+
+import corn from "@/assets/corn.jpeg";
+import cotton from "@/assets/cotton.jpeg";
+import rice from "@/assets/rice.jpg";
+import millets from "@/assets/millets.jpg";
+import wheat from "@/assets/wheat.webp";
+
+interface Crop {
+  name: string;
+  image: string;
+}
+
+export const crops: Crop[] = [
+  { name: "Wheat", image: wheat },
+  { name: "Corn", image: corn },
+  { name: "Rice", image: rice },
+  { name: "Cotton", image: cotton },
+  { name: "Millets", image: millets },
+];
 
 export function RegionSelectorComponent({
   open,
@@ -70,7 +86,7 @@ export function RegionSelectorComponent({
               >
                 <img
                   src={crop.image}
-                  className="max-w-[200px] min-w-[200px] aspect-square rounded-lg shadow-xl"
+                  className="max-w-[170px] min-w-[170px] aspect-square rounded-lg shadow-xl object-cover"
                 />
                 <div className="absolute p-1 bottom-0 w-full bg-opacity-80 backdrop-blur-sm bg-white justify-center flex rounded-lg rounded-t-none">
                   {crop.name}
