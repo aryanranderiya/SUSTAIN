@@ -83,7 +83,7 @@ export default function EnhancedWeatherDisplay({
           axios.get(`https://api.openweathermap.org/data/2.5/forecast`, {
             params: { lat, lon, appid: API_KEY, units: "metric" },
           }),
-          axios.get(`http://api.openweathermap.org/data/2.5/air_pollution`, {
+          axios.get(`https://api.openweathermap.org/data/2.5/air_pollution`, {
             params: { lat, lon, appid: API_KEY },
           }),
         ]);
